@@ -1,6 +1,6 @@
 // import { AccountModel } from '../../domain/models/AccountModel'
 // import { AddAccount, AddAccountModel } from '../../domain/usecases/add-account'
-import { SignUpController } from './signUpController'
+import { SignUpController } from './signUp'
 
 // interface SutTypes {
 //   sut: SignUpController
@@ -47,5 +47,6 @@ describe('Sign up controller suite', () => {
 
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new Error('Missig param: name'))
   })
 })
