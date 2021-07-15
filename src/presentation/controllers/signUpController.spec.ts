@@ -1,6 +1,7 @@
 // import { AccountModel } from '../../domain/models/AccountModel'
 // import { AddAccount, AddAccountModel } from '../../domain/usecases/add-account'
 import { InvalidParamError, MissingParamError, ServerError } from '../errors'
+import { serverError } from '../helper/http-helper'
 import { EmailValidator } from '../protocols'
 import { SignUpController } from './signUp'
 
@@ -28,15 +29,6 @@ const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid (email: string): boolean {
       return true
-    }
-  }
-  return new EmailValidatorStub()
-}
-const makeEmailValidatorWithError = (): EmailValidator => {
-  // tslint:disable-next-line: max-classes-per-file
-  class EmailValidatorStub implements EmailValidator {
-    isValid (email: string): boolean {
-      throw new Error()
     }
   }
   return new EmailValidatorStub()
@@ -150,8 +142,8 @@ describe('Sign up controller suite', () => {
 
   test('should return 500 if email validator throws', () => {
     // const addAccountStub = makeAddAccount()
-    const emailValidatorStub = makeEmailValidatorWithError()// makeEmailValidator()
-    const sut = new SignUpController(emailValidatorStub)// addAccountStub
+    const { sut, emailValidatorStub } = makeSut()
+    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => { throw new Error() })
 
     const httpRequest = {
       body: {
