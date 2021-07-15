@@ -42,7 +42,7 @@ describe('Sign up controller suite', () => {
       body: {
         email: 'any_email@mail.com',
         password: 'any_password',
-        confirmPassword: 'any_password'
+        passwordConfirmation: 'any_password'
       }
     }
 
@@ -57,7 +57,7 @@ describe('Sign up controller suite', () => {
       body: {
         name: 'any_name',
         password: 'any_password',
-        confirmPassword: 'any_password'
+        passwordConfirmation: 'any_password'
       }
     }
 
@@ -72,7 +72,7 @@ describe('Sign up controller suite', () => {
       body: {
         name: 'any_name',
         email: 'any_email',
-        confirmPassword: 'any_password'
+        passwordConfirmation: 'any_password'
       }
     }
 
@@ -93,6 +93,6 @@ describe('Sign up controller suite', () => {
 
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParamError('confirmPassword'))
+    expect(httpResponse.body).toEqual(new MissingParamError('passwordConfirmation'))
   })
 })
