@@ -24,15 +24,27 @@ interface SutTypes {
 //   }
 //   return new AddAccountStub()
 // }
-
-const makeSut = (): SutTypes => {
+const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid (email: string): boolean {
       return true
     }
   }
+  return new EmailValidatorStub()
+}
+const makeEmailValidatorWithError = (): EmailValidator => {
+  // tslint:disable-next-line: max-classes-per-file
+  class EmailValidatorStub implements EmailValidator {
+    isValid (email: string): boolean {
+      throw new Error()
+    }
+  }
+  return new EmailValidatorStub()
+}
+
+const makeSut = (): SutTypes => {
   // const addAccountStub = makeAddAccount()
-  const emailValidatorStub = new EmailValidatorStub()// makeEmailValidator()
+  const emailValidatorStub = makeEmailValidator()
   const sut = new SignUpController(emailValidatorStub)// addAccountStub
   return {
     sut,
@@ -137,14 +149,8 @@ describe('Sign up controller suite', () => {
   })
 
   test('should return 500 if email validator throws', () => {
-    // tslint:disable-next-line: max-classes-per-file
-    class EmailValidatorStub implements EmailValidator {
-      isValid (email: string): boolean {
-        throw new Error()
-      }
-    }
     // const addAccountStub = makeAddAccount()
-    const emailValidatorStub = new EmailValidatorStub()// makeEmailValidator()
+    const emailValidatorStub = makeEmailValidatorWithError()// makeEmailValidator()
     const sut = new SignUpController(emailValidatorStub)// addAccountStub
 
     const httpRequest = {
