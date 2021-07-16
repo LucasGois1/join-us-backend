@@ -9,12 +9,7 @@ export class AccountMongoRepository implements AddAccountRepository {
 
     const result = await accountCollection.insertOne(account)
     const document = await accountCollection.findOne({ _id: result.insertedId })
-    const accountParsed = JSON.parse(JSON.stringify(document))
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const reassignAccount = Object.assign({}, accountParsed, { id: accountParsed._id })
-    const { _id, ...registeredAccount } = reassignAccount
-
-    return registeredAccount
+    return MongoHelper.idMapper(document)
   }
 }
