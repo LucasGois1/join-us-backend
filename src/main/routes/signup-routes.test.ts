@@ -30,9 +30,9 @@ describe('SignUp routes suite', () => {
       })
 
     expect(res.statusCode).toBe(200)
-    // expect(res.body.id).toBeTruthy()
-    // expect(res.body.name).toBe('Lucas Gois')
-    // expect(res.body.email).toBe('lucas@gmail.com')
-    // expect(res.body.password).toBe('123456')
+    expect(res.body.id).toBeTruthy()
+    expect(res.body.name).toBe('Lucas Gois')
+    expect(res.body.email).toBe('lucas@gmail.com')
+    expect(res.body.password).toBe('123456')
   })
 })
