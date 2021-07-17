@@ -1,5 +1,4 @@
 import request from 'supertest'
-import { AccountMongoRepository } from '../../infra/db/mongodb/account-repository/account'
 import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
 import app from '../config/app'
 
@@ -14,9 +13,6 @@ beforeEach(async () => {
   const accountCollection = MongoHelper.getCollection('accounts')
   await accountCollection.deleteMany({})
 })
-const makeSut = (): AccountMongoRepository => {
-  return new AccountMongoRepository()
-}
 
 describe('SignUp routes suite', () => {
   test('Should return an account on success', async () => {
