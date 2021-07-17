@@ -1,5 +1,4 @@
-import express from 'express'
-const app = express()
+import app from './config/app'
 
 app.get('/', (req, res) => {
   res.json({ status: 200 })
