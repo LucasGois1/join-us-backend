@@ -33,6 +33,6 @@ describe('SignUp routes suite', () => {
     expect(res.body.id).toBeTruthy()
     expect(res.body.name).toBe('Lucas Gois')
     expect(res.body.email).toBe('lucas@gmail.com')
-    expect(res.body.password).toBe('123456')
+    expect(res.body.password).not.toBe('123456')
   })
 })
