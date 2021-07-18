@@ -50,4 +50,23 @@ describe('Log Decorator suite', () => {
       }
     })
   })
+
+  test('should return the same thing of decorated controller receive', async () => {
+    const { sut } = makeSut()
+
+    const httpRequest = {
+      body: {
+        content: 'any_content'
+      }
+    }
+
+    const response = await sut.handle(httpRequest)
+
+    expect(response).toEqual({
+      statusCode: 200,
+      body: {
+        content: 'any_content'
+      }
+    })
+  })
 })
