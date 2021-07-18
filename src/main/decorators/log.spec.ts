@@ -1,9 +1,12 @@
+import { LogErrorRepository } from '../../data/protocols/log-error-repository'
+import { serverError } from '../../presentation/helper/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '../../presentation/protocols'
 import { LogControllerDecorator } from './log'
 
 interface SutTypes {
   sut: LogControllerDecorator
   controllerStub: Controller
+  logErrorRepositoryStub: LogErrorRepository
 }
 
 const makeController = (): Controller => {
@@ -21,12 +24,24 @@ const makeController = (): Controller => {
   return new ControllerStub()
 }
 
+const makeLogErrorRepository = (): LogErrorRepository => {
+  // tslint:disable-next-line: max-classes-per-file
+  class LogErrorRepositoryStub implements LogErrorRepository {
+    async log (stack: string): Promise<void> {
+      return new Promise(resolve => resolve())
+    }
+  }
+  return new LogErrorRepositoryStub()
+}
+
 const makeSut = (): SutTypes => {
   const controllerStub = makeController()
-  const sut = new LogControllerDecorator(controllerStub)
+  const logErrorRepositoryStub = makeLogErrorRepository()
+  const sut = new LogControllerDecorator(controllerStub, logErrorRepositoryStub)
   return {
     sut,
-    controllerStub
+    controllerStub,
+    logErrorRepositoryStub
   }
 }
 
@@ -68,5 +83,24 @@ describe('Log Decorator suite', () => {
         content: 'any_content'
       }
     })
+  })
+
+  test('should call LogErrorRepository withcorrect error if controller returns return a server Error', async () => {
+    const { sut, controllerStub, logErrorRepositoryStub } = makeSut()
+    const fakeError = new Error()
+    fakeError.stack = 'any_stack'
+    const error = serverError(fakeError)
+
+    jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce(new Promise(resolve => resolve(error)))
+    jest.spyOn(logErrorRepositoryStub, 'log')
+    const httpRequest = {
+      body: {
+        content: 'any_content'
+      }
+    }
+
+    await sut.handle(httpRequest)
+
+    expect(logErrorRepositoryStub).toHaveBeenCalledWith('any_stack')
   })
 })
