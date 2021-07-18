@@ -92,7 +92,7 @@ describe('Log Decorator suite', () => {
     const error = serverError(fakeError)
 
     jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce(new Promise(resolve => resolve(error)))
-    jest.spyOn(logErrorRepositoryStub, 'log')
+    const logSpy = jest.spyOn(logErrorRepositoryStub, 'log')
     const httpRequest = {
       body: {
         content: 'any_content'
@@ -101,6 +101,6 @@ describe('Log Decorator suite', () => {
 
     await sut.handle(httpRequest)
 
-    expect(logErrorRepositoryStub).toHaveBeenCalledWith('any_stack')
+    expect(logSpy).toHaveBeenCalledWith('any_stack')
   })
 })
