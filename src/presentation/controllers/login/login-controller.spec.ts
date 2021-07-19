@@ -1,6 +1,6 @@
 import { AddAccountModel } from './../../../domain/usecases/add-account'
 import { EmailValidator } from './../../protocols/email-validator'
-import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
+import { InvalidParamError, MissingParamError } from '../../errors'
 import { LoginController } from './login'
 import { MongoHelper } from '../../../infra/db/mongodb/helpers/mongo-helper'
 
