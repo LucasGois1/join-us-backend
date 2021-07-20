@@ -1,3 +1,4 @@
+import { CompareFieldsValidation } from '../../presentation/helper/validators/compare-fields-validation'
 import { RequiredFieldValidation } from '../../presentation/helper/validators/required-field-validation'
 import { ValidationComposite } from '../../presentation/helper/validators/validation-composite'
 import { makeSignUpValidation } from './signup-validation'
@@ -11,7 +12,8 @@ describe('SignUp Validation suite', () => {
       new RequiredFieldValidation('name'),
       new RequiredFieldValidation('email'),
       new RequiredFieldValidation('password'),
-      new RequiredFieldValidation('passwordConfirmation')
+      new RequiredFieldValidation('passwordConfirmation'),
+      new CompareFieldsValidation('password', 'passwordConfirmation')
     ])
   })
 })
