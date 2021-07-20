@@ -2,7 +2,7 @@ import { LoginController } from './login'
 import { AddAccountModel } from './../../../domain/usecases/add-account'
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { MongoHelper } from '../../../infra/db/mongodb/helpers/mongo-helper'
-import { badRequest, serverError, unauthorized } from '../../helper/http-helper'
+import { badRequest, serverError, success, unauthorized } from '../../helper/http-helper'
 import { HttpRequest, Authentication, EmailValidator } from './login-protocols'
 import { rejects } from 'assert/strict'
 
@@ -170,5 +170,14 @@ describe('LoginController suite', () => {
     }
     const response = await sut.handle(httpResquest)
     expect(response).toEqual(serverError(new Error()))
+  })
+
+  test('should return 200 if valid credentials is provided', async () => {
+    const { sut } = makeSut()
+
+    const response = await sut.handle(makeFakeRequest())
+    expect(response).toEqual(success({
+      accessToken: 'any_token'
+    }))
   })
 })
