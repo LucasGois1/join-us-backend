@@ -2,7 +2,7 @@ import { LoginController } from './login'
 import { AddAccountModel } from './../../../domain/usecases/add-account'
 import { MissingParamError } from '../../errors'
 import { MongoHelper } from '../../../infra/db/mongodb/helpers/mongo-helper'
-import { badRequest, serverError, success, unauthorized } from '../../helper/http-helper'
+import { badRequest, serverError, success, unauthorized } from '../../helper/http/http-helper'
 import { HttpRequest, Authentication, Validation } from './login-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
