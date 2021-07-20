@@ -6,6 +6,12 @@ export const routeAdapter = (controller: Controller) => {
       body: req.body
     }
     const httpReponse = await controller.handle(httpRequest)
-    res.status(httpReponse.statusCode).send(httpReponse.body)
+    if (httpReponse.statusCode === 200) {
+      res.status(httpReponse.statusCode).send(httpReponse.body)
+    } else {
+      res.status(httpReponse.statusCode).send({
+        error: httpReponse.body.message
+      })
+    }
   }
 }
