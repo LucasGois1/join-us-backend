@@ -1,11 +1,9 @@
-import { AddAccountModel } from './../../../domain/usecases/add-account'
-import { EmailValidator } from './../../protocols/email-validator'
-import { InvalidParamError, MissingParamError } from '../../errors'
 import { LoginController } from './login'
+import { AddAccountModel } from './../../../domain/usecases/add-account'
+import { InvalidParamError, MissingParamError } from '../../errors'
 import { MongoHelper } from '../../../infra/db/mongodb/helpers/mongo-helper'
 import { badRequest, serverError, unauthorized } from '../../helper/http-helper'
-import { HttpRequest } from '../../protocols'
-import { Authentication } from '../../../domain/usecases/authentication'
+import { HttpRequest, Authentication, EmailValidator } from './login-protocols'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
