@@ -3,7 +3,7 @@ import { EmailValidator } from './../../protocols/email-validator'
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { LoginController } from './login'
 import { MongoHelper } from '../../../infra/db/mongodb/helpers/mongo-helper'
-import { badRequest, serverError } from '../../helper/http-helper'
+import { badRequest, serverError, unauthorized } from '../../helper/http-helper'
 import { HttpRequest } from '../../protocols'
 import { Authentication } from '../../../domain/usecases/authentication'
 
@@ -141,5 +141,18 @@ describe('LoginController suite', () => {
 
     await sut.handle(makeFakeRequest())
     expect(authSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_password')
+  })
+
+  test('should return 401 if invalid credentials is provided', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const httpRequest = {
+      body: {
+        email: 'invalid_email@mail.com',
+        password: 'invalid_password'
+      }
+    }
+    const response = await sut.handle(httpRequest)
+    expect(response).toEqual(unauthorized())
   })
 })
