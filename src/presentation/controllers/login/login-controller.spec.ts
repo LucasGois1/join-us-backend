@@ -1,10 +1,11 @@
 import { AddAccountModel } from './../../../domain/usecases/add-account'
 import { EmailValidator } from './../../protocols/email-validator'
-import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
+import { InvalidParamError, MissingParamError } from '../../errors'
 import { LoginController } from './login'
 import { MongoHelper } from '../../../infra/db/mongodb/helpers/mongo-helper'
 import { badRequest, serverError } from '../../helper/http-helper'
 import { HttpRequest } from '../../protocols'
+import { Authentication } from '../../../domain/usecases/authentication'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -16,6 +17,7 @@ const makeFakeRequest = (): HttpRequest => ({
 interface SutTypes {
   sut: LoginController
   emailValidatorStub: EmailValidator
+  authenticationStub: Authentication
 }
 
 const makeEmailValidatorStub = (): EmailValidator => {
@@ -27,12 +29,24 @@ const makeEmailValidatorStub = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
+const makeAuthenticationStub = (): Authentication => {
+  // tslint:disable-next-line: max-classes-per-file
+  class AuthenticationStub implements Authentication {
+    async auth (email: string, password: string): Promise<string> {
+      return new Promise(resolve => resolve('any_token'))
+    }
+  }
+  return new AuthenticationStub()
+}
+
 const makeSut = (): SutTypes => {
+  const authenticationStub = makeAuthenticationStub()
   const emailValidatorStub = makeEmailValidatorStub()
-  const sut = new LoginController(emailValidatorStub)
+  const sut = new LoginController(emailValidatorStub, authenticationStub)
   return {
     sut,
-    emailValidatorStub
+    emailValidatorStub,
+    authenticationStub
   }
 }
 
@@ -120,21 +134,12 @@ describe('LoginController suite', () => {
     const response = await sut.handle(httpResquest)
     expect(response).toEqual(serverError(new Error()))
   })
-  // test('should returns sucess if credentials are valid', async () => {
-  //   const { sut } = makeSut()
 
-  //   const httpResquest = {
-  //     body: {
-  //       email: 'any_email@mail.com',
-  //       password: 'any_password'
-  //     }
-  //   }
-  //   const response = await sut.handle(httpResquest)
-  //   expect(response.statusCode).toBe(200)
-  //   expect(response.body).toEqual({
-  //     token: 'any_token',
-  //     name: 'any_name',
-  //     email: 'any_email@mail.com'
-  //   })
-  // })
+  test('should call Authentication with correct values', async () => {
+    const { sut, authenticationStub } = makeSut()
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+
+    await sut.handle(makeFakeRequest())
+    expect(authSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_password')
+  })
 })
