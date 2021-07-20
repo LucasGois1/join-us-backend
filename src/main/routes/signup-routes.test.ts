@@ -24,7 +24,7 @@ describe('SignUp routes suite', () => {
         password: '123456',
         passwordConfirmation: '123456'
       })
-
+    console.log(res)
     expect(res.statusCode).toBe(200)
     expect(res.body.id).toBeTruthy()
     expect(res.body.name).toBe('Lucas Gois')

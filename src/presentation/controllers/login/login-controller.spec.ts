@@ -4,7 +4,6 @@ import { InvalidParamError, MissingParamError } from '../../errors'
 import { MongoHelper } from '../../../infra/db/mongodb/helpers/mongo-helper'
 import { badRequest, serverError, success, unauthorized } from '../../helper/http-helper'
 import { HttpRequest, Authentication, EmailValidator } from './login-protocols'
-import { rejects } from 'assert/strict'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
