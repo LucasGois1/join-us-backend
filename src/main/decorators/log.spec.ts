@@ -44,7 +44,7 @@ const makeController = (): Controller => {
 const makeLogErrorRepository = (): LogErrorRepository => {
   // tslint:disable-next-line: max-classes-per-file
   class LogErrorRepositoryStub implements LogErrorRepository {
-    async log (stack: string): Promise<void> {
+    async logError (stack: string): Promise<void> {
       return new Promise(resolve => resolve())
     }
   }
@@ -62,7 +62,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('Log Decorator suite', () => {
+describe('LogError Decorator suite', () => {
   test('should call controller handle', async () => {
     const { sut, controllerStub } = makeSut()
 
@@ -84,7 +84,7 @@ describe('Log Decorator suite', () => {
   test('should call LogErrorRepository withcorrect error if controller returns return a server Error', async () => {
     const { sut, controllerStub, logErrorRepositoryStub } = makeSut()
     jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce(new Promise(resolve => resolve(makeFakeServerError())))
-    const logSpy = jest.spyOn(logErrorRepositoryStub, 'log')
+    const logSpy = jest.spyOn(logErrorRepositoryStub, 'logError')
 
     await sut.handle(makeFakeRequest())
     expect(logSpy).toHaveBeenCalledWith('any_stack')
