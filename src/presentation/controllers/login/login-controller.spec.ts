@@ -4,6 +4,7 @@ import { InvalidParamError, MissingParamError } from '../../errors'
 import { MongoHelper } from '../../../infra/db/mongodb/helpers/mongo-helper'
 import { badRequest, serverError, unauthorized } from '../../helper/http-helper'
 import { HttpRequest, Authentication, EmailValidator } from './login-protocols'
+import { rejects } from 'assert/strict'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -143,7 +144,9 @@ describe('LoginController suite', () => {
 
   test('should return 401 if invalid credentials is provided', async () => {
     const { sut, authenticationStub } = makeSut()
-    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    jest.spyOn(authenticationStub, 'auth')
+      .mockReturnValueOnce(new Promise(resolve => resolve(null)))
+
     const httpRequest = {
       body: {
         email: 'invalid_email@mail.com',
@@ -152,5 +155,20 @@ describe('LoginController suite', () => {
     }
     const response = await sut.handle(httpRequest)
     expect(response).toEqual(unauthorized())
+  })
+
+  test('should returns 500 if authentication throws', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth')
+      .mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+
+    const httpResquest = {
+      body: {
+        email: 'invalid_email',
+        password: 'any_password'
+      }
+    }
+    const response = await sut.handle(httpResquest)
+    expect(response).toEqual(serverError(new Error()))
   })
 })
