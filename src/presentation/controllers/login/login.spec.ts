@@ -1,9 +1,10 @@
 import { LoginController } from './login'
-import { AddAccountModel } from './../../../domain/usecases/add-account'
+import { AddAccountModel } from '../../../domain/usecases/add-account'
 import { MissingParamError } from '../../errors'
 import { MongoHelper } from '../../../infra/db/mongodb/helpers/mongo-helper'
 import { badRequest, serverError, success, unauthorized } from '../../helper/http/http-helper'
 import { HttpRequest, Authentication, Validation } from './login-protocols'
+import { AuthenticationModel } from '../../../domain/usecases/authentication'
 
 const makeFakeRequest = (): HttpRequest => ({
   body: {
@@ -31,7 +32,7 @@ interface SutTypes {
 const makeAuthenticationStub = (): Authentication => {
   // tslint:disable-next-line: max-classes-per-file
   class AuthenticationStub implements Authentication {
-    async auth (email: string, password: string): Promise<string> {
+    async auth (authentication: AuthenticationModel): Promise<string> {
       return new Promise(resolve => resolve('any_token'))
     }
   }
@@ -78,7 +79,10 @@ describe('LoginController suite', () => {
     const authSpy = jest.spyOn(authenticationStub, 'auth')
 
     await sut.handle(makeFakeRequest())
-    expect(authSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_password')
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
   })
 
   test('should return 401 if invalid credentials is provided', async () => {
