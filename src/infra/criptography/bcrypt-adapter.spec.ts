@@ -41,4 +41,12 @@ describe('Hasher suite', () => {
     const isValid = await sut.compare('password', 'hashed_password')
     expect(isValid).toBeTruthy()
   })
+
+  test('Should return false if compare fails',async () => {
+    const sut = makeSut()
+    jest.spyOn(sut, 'compare').mockReturnValueOnce(new Promise(resolve => resolve(false)))
+
+    const isValid = await sut.compare('password', 'hashed_password')
+    expect(isValid).toBeFalsy()
+  })
 })
