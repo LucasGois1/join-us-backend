@@ -8,10 +8,10 @@ import { LogControllerDecorator } from '../../decorators/log'
 import { makeSignUpValidation } from './signup-validation'
 
 export const makeSignUpController = (): Controller => {
-  const encrypter = new BcryptAdapter()
+  const hasher = new BcryptAdapter()
   const accountMongoRepository = new AccountMongoRepository()
   const logMongoRepository = new LogMongoRepository()
-  const addAccount = new DbAddAccount(encrypter, accountMongoRepository)
+  const addAccount = new DbAddAccount(hasher, accountMongoRepository)
   const signUpController = new SignUpController(addAccount, makeSignUpValidation())
   return new LogControllerDecorator(signUpController, logMongoRepository)
 }
