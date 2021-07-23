@@ -49,4 +49,19 @@ describe('Hasher suite', () => {
     const isValid = await sut.compare('password', 'hashed_password')
     expect(isValid).toBeFalsy()
   })
+  test('Should throws if hash throws',async () => {
+    const sut = makeSut()
+    jest.spyOn(bcrypt, 'hash').mockImplementationOnce(async () => new Promise((resolve, reject) => reject(new Error())))
+
+    const promise = sut.hash('password')
+    await expect(promise).rejects.toThrow()
+  })
+
+  test('Should throws if compare throws',async () => {
+    const sut = makeSut()
+    jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async () => new Promise((resolve, reject) => reject(new Error())))
+
+    const promise = sut.compare('password', 'hashed_password')
+    await expect(promise).rejects.toThrow()
+  })
 })
