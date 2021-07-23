@@ -84,6 +84,13 @@ describe('MongoDB Authentications suite', () => {
     expect(compareSpy).toHaveBeenCalledWith('valid_password', 'hashed_password')
   })
 
+  test('Should throws if hashComparer throws',async () => {
+    const { sut, hashComparerStub } = makeSut()
+    jest.spyOn(hashComparerStub, 'compare').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const promise = sut.auth(makeFakeAuthentication())
+    await expect(promise).rejects.toThrow()
+  })
+
   // test('Should return an Token if login credentials are correctly',async () => {
   //   const { sut } = makeSut()
 
