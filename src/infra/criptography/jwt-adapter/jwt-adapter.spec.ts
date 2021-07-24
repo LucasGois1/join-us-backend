@@ -20,4 +20,17 @@ describe('JWT Adapter suite', () => {
       id: 'valid_id'
     }, 'secret')
   })
+
+  test('Should return a token on success', async () => {
+    const sut = makeSut()
+    const accessToken = await sut.encrypt('valid_id')
+    expect(accessToken).toBe('valid_token')
+  })
+
+  test('Should throws if jwt throws', async () => {
+    const sut = makeSut()
+    jest.spyOn(jwt, 'sign').mockImplementationOnce(async () => new Promise((resolve, reject) => reject(new Error())))
+    const promise = sut.encrypt('valid_id')
+    await expect(promise).rejects.toThrow()
+  })
 })
