@@ -56,5 +56,33 @@ describe('Login routes suite', () => {
         })
         .expect(200)
     })
+
+    test('Should return 401 on login with wrong credentials', async () => {
+      const password = await hash('1234', 12)
+
+      await accountCollection.insertOne({
+        name: 'Lucas Gois',
+        email: 'lucas@gmail.com',
+        password
+      })
+
+      await request(app)
+        .post('/api/login')
+        .send({
+          email: 'lucas@gmail.com',
+          password: '123'
+        })
+        .expect(401)
+    })
+
+    test('Should return 401 on login if user not exists', async () => {
+      await request(app)
+        .post('/api/login')
+        .send({
+          email: 'lucas@gmail.com',
+          password: '123'
+        })
+        .expect(401)
+    })
   })
 })
