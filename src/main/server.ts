@@ -1,9 +1,9 @@
 import { MongoHelper } from '../infra/db/mongodb/helpers/mongo-helper'
 import env from './config/env'
 
-MongoHelper.connect(env.mongoUrl)
+MongoHelper.connect(env.mongoUrlATLAS)
   .then(() => {
-    console.log(`MongoDB connection sucessfully on ${env.mongoUrl}`)
+    console.log(`MongoDB connection sucessfully on ${env.mongoUrlATLAS}`)
   })
   .then(async () => {
     const app = (await import('./config/app')).default
