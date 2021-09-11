@@ -4,9 +4,9 @@ WORKDIR /lucasgois/join-us-server
 
 COPY package*.json ./
 
-RUN yarn
+RUN npm install --only=prod
 
-COPY . .
+COPY ./dist ./dist
 
 EXPOSE 5000
 
