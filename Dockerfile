@@ -4,7 +4,7 @@ WORKDIR /lucasgois/join-us-server
 
 COPY package*.json ./
 
-RUN npm install --only=prod
+RUN yarn install --production
 
 COPY ./dist ./dist
 
