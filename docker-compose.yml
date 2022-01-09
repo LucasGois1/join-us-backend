@@ -4,5 +4,25 @@ services:
     join-us-backend:
         build: .
         ports: 
-           - "5000:5000"
+           - "80:5000"
         command: npm start
+        depends_on:
+          - database
+        networks:
+          - production
+
+    database:
+        image: mongo
+        volumes:
+          - data:/lucasgois/database
+        ports:
+          - "9000:27018"
+        networks:
+          - production   
+
+volumes:
+    data:
+
+networks:
+    production:
+        driver: bridge
