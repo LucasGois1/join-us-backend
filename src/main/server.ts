@@ -12,5 +12,6 @@ MongoHelper.connect(env.mongoUrl)
     })
   })
   .catch((error) => {
+    console.log('teste')
     console.error(`Houve um erro durante a conexão com o banco de dados\nlog: ${error}`)
   })

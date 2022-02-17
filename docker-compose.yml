@@ -2,9 +2,11 @@ version: "3"
 
 services:
     join-us-backend:
-        build: .
+        build: 
+          context: .
+          dockerfile: server.dockerfile
         ports: 
-           - "80:5000"
+           - "3000:3000"
         command: npm start
         depends_on:
           - database
@@ -15,10 +17,11 @@ services:
         image: mongo
         volumes:
           - data:/lucasgois/database
-        ports:
-          - "9000:27018"
         networks:
-          - production   
+          - production
+        ports:
+          - "27017:27017"
+
 
 volumes:
     data:
